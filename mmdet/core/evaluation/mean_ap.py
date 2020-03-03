@@ -258,10 +258,11 @@ def get_cls_results(det_results, annotations, class_id):
             ignore_inds = ann['labels_ignore'] == (class_id + 1)
             cls_gts_ignore.append(ann['bboxes_ignore'][ignore_inds, :])
         else:
-            cls_gts_ignore.append(np.array((0, 4), dtype=np.float32))
+            cls_gts_ignore.append(np.empty((0, 4), dtype=np.float32))
 
     return cls_dets, cls_gts, cls_gts_ignore
 
+pool = Pool(12)
 
 def eval_map(det_results,
              annotations,
@@ -304,10 +305,11 @@ def eval_map(det_results,
     num_imgs = len(det_results)
     num_scales = len(scale_ranges) if scale_ranges is not None else 1
     num_classes = len(det_results[0])  # positive class num
+    print('num_classes is {0}'.format(num_classes))
     area_ranges = ([(rg[0]**2, rg[1]**2) for rg in scale_ranges]
                    if scale_ranges is not None else None)
 
-    pool = Pool(nproc)
+    # pool = Pool(nproc)
     eval_results = []
     for i in range(num_classes):
         # get gt and det bboxes of this class
@@ -380,7 +382,7 @@ def eval_map(det_results,
             if cls_result['num_gts'] > 0:
                 aps.append(cls_result['ap'])
         mean_ap = np.array(aps).mean().item() if aps else 0.0
-
+    print('iou_thre is {0}'.format(iou_thr))    
     print_map_summary(
         mean_ap, eval_results, dataset, area_ranges, logger=logger)
 
@@ -427,17 +429,14 @@ def print_map_summary(mean_ap,
             recalls[:, i] = np.array(cls_result['recall'], ndmin=2)[:, -1]
         aps[:, i] = cls_result['ap']
         num_gts[:, i] = cls_result['num_gts']
-
     if dataset is None:
         label_names = [str(i) for i in range(1, num_classes + 1)]
     elif mmcv.is_str(dataset):
         label_names = get_classes(dataset)
     else:
         label_names = dataset
-
     if not isinstance(mean_ap, list):
         mean_ap = [mean_ap]
-
     header = ['class', 'gts', 'dets', 'recall', 'ap']
     for i in range(num_scales):
         if scale_ranges is not None:

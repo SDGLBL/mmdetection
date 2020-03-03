@@ -10,6 +10,7 @@ class Compose(object):
     def __init__(self, transforms):
         assert isinstance(transforms, collections.abc.Sequence)
         self.transforms = []
+
         for transform in transforms:
             if isinstance(transform, dict):
                 transform = build_from_cfg(transform, PIPELINES)

@@ -3,7 +3,9 @@ import inspect
 import mmcv
 import numpy as np
 from numpy import random
-
+from PIL import Image
+from PIL.JpegImagePlugin import JpegImageFile
+from torchvision import transforms
 from mmdet.core.evaluation.bbox_overlaps import bbox_overlaps
 from ..registry import PIPELINES
 
@@ -18,7 +20,6 @@ try:
 except ImportError:
     albumentations = None
     Compose = None
-
 
 @PIPELINES.register_module
 class Resize(object):
@@ -185,6 +186,8 @@ class Resize(object):
                                               self.ratio_range,
                                               self.keep_ratio)
         return repr_str
+
+
 
 
 @PIPELINES.register_module
