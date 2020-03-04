@@ -149,6 +149,7 @@ data = dict(
         ann_file=data_root + 'ImageSets/Main/test.txt',
         img_prefix=data_root,
         pipeline=test_pipeline))
+        
 evaluation = dict(interval=1, metric='mAP')
 # optimizer
 optimizer = dict(type='SGD', lr=0.02, momentum=0.9, weight_decay=0.0001)

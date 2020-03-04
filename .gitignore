@@ -114,6 +114,9 @@ data
 *.log.json
 work_dirs/
 weights/
+hat_test/
+myconfigs/
 
 # Pytorch
 *.pth
+result.jpg
