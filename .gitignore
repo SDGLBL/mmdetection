@@ -116,7 +116,9 @@ work_dirs/
 weights/
 hat_test/
 myconfigs/
+inference_demo.ipynb
+result.jpg
 
 # Pytorch
 *.pth
-result.jpg
+
